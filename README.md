@@ -8,27 +8,19 @@ This repository is the **official project page** for **CEVNet**, a framework for
 
 ## Overview
 
-Camouflaged objects often share similar colors and textures with their surroundings. As a result, strong feature activations may arise not only from objects but also from visually similar backgrounds or contextual co-occurrence. CEVNet addresses this issue by assessing how candidate responses change under controlled modifications of a background proxy, and then refining object predictions through semantic guidance.
+CEVNet addresses background-induced false responses in camouflaged object detection by calibrating candidate features with counterfactual evidence and refining predictions through semantic guidance.
 
-![Motivation of CEVNet](figures/motivation.jpg)
+<p align="center">
+  <img src="figures/motivation.jpg" alt="CEVNet motivation" width="520">
+</p>
 
 ## Framework
 
-![Overall architecture of CEVNet](figures/overall.jpg)
+<p align="center">
+  <img src="figures/overall.jpg" alt="CEVNet architecture" width="680">
+</p>
 
-CEVNet contains two complementary components:
-
-**1. Counterfactual Evidence Calibration**
-
-- **Counterfactual Feature Construction (CFC):** Constructs approximate counterfactual representations using background-proxy replacement while protecting potential foreground regions.
-- **Response Difference Calibration (RDC):** Compares factual and counterfactual responses and selectively attenuates background-sensitive feature components using low-rank projection and spatial risk gating.
-
-**2. Prompt-Guided Competitive Decoding**
-
-- **Competitive Semantic Guidance (CSG):** Uses high-level semantic prompts to guide multi-scale feature integration.
-- **Competitive Mask Refinement (CMR):** Combines cross-scale context, previous-stage predictions, and spatial variance modulation to progressively improve object localization and boundary quality.
-
-Counterfactual calibration is applied to the first three encoder stages, while features from the fourth stage provide high-level semantic prompts for decoding.
+CEVNet integrates **Counterfactual Evidence Calibration** (CFC and RDC) to suppress background-sensitive responses with **Prompt-Guided Competitive Decoding** (CSG and CMR) to improve multi-scale fusion and mask refinement. Calibration operates on the first three encoder stages; the fourth stage supplies semantic prompts.
 
 ## Results on COD Benchmarks
 
