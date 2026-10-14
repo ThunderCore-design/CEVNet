@@ -1,2 +1,108 @@
 # CEVNet
-Official implementation of CEVNet for Camouflaged Object Detection.
+
+### Counterfactual Evidence Calibration and Prompt-Guided Competitive Decoding for Camouflaged Object Detection
+
+This repository is the **official project page** for **CEVNet**, a framework for camouflaged object detection (COD). CEVNet aims to distinguish reliable foreground evidence from background-induced responses through counterfactual feature calibration and prompt-guided competitive decoding.
+
+> **Release status:** Project figures and experimental summaries are available. Source code, pretrained weights, and reproduction instructions will be released in a future update.
+
+## Overview
+
+Camouflaged objects often share similar colors and textures with their surroundings. As a result, strong feature activations may arise not only from objects but also from visually similar backgrounds or contextual co-occurrence. CEVNet addresses this issue by assessing how candidate responses change under controlled modifications of a background proxy, and then refining object predictions through semantic guidance.
+
+![Motivation of CEVNet](figures/motivation.jpg)
+
+## Framework
+
+![Overall architecture of CEVNet](figures/overall.jpg)
+
+CEVNet contains two complementary components:
+
+**1. Counterfactual Evidence Calibration**
+
+- **Counterfactual Feature Construction (CFC):** Constructs approximate counterfactual representations using background-proxy replacement while protecting potential foreground regions.
+- **Response Difference Calibration (RDC):** Compares factual and counterfactual responses and selectively attenuates background-sensitive feature components using low-rank projection and spatial risk gating.
+
+**2. Prompt-Guided Competitive Decoding**
+
+- **Competitive Semantic Guidance (CSG):** Uses high-level semantic prompts to guide multi-scale feature integration.
+- **Competitive Mask Refinement (CMR):** Combines cross-scale context, previous-stage predictions, and spatial variance modulation to progressively improve object localization and boundary quality.
+
+Counterfactual calibration is applied to the first three encoder stages, while features from the fourth stage provide high-level semantic prompts for decoding.
+
+## Results on COD Benchmarks
+
+We evaluate CEVNet on three widely used camouflaged object detection benchmarks: **CAMO**, **COD10K**, and **NC4K**. The following results correspond to **CEVNet with a PVTv2-B4 backbone** at an input resolution of **384 × 384**.
+
+| Dataset | S-measure ↑ | E-measure ↑ | Adaptive F-measure ↑ | MAE ↓ |
+|:--|--:|--:|--:|--:|
+| CAMO | **0.885** | **0.946** | **0.871** | **0.037** |
+| COD10K | **0.872** | **0.948** | **0.818** | **0.020** |
+| NC4K | **0.898** | **0.947** | **0.873** | **0.027** |
+
+In the comparisons reported in our manuscript, this configuration obtains the best results across all twelve metrics among the evaluated methods. Additional backbone experiments include PVTv2-B2 and Res2Net-50 variants.
+
+### Qualitative Comparisons
+
+![Qualitative comparisons on camouflaged object detection](figures/visualization.jpg)
+
+### Precision–Recall Curves
+
+![Precision–recall curves on CAMO, COD10K, and NC4K](figures/pr_curves.jpg)
+
+## Evaluation Beyond Standard COD Benchmarks
+
+### HyperCOD Pseudo-RGB Images
+
+To examine performance in highly camouflaged natural scenes with small foreground regions and complex backgrounds, we evaluate CEVNet on **HyperCOD pseudo-RGB images**. This experiment uses **three-channel pseudo-RGB representations**, not the full hyperspectral data cube.
+
+| S-measure ↑ | E-measure ↑ | Adaptive F-measure ↑ | MAE ↓ |
+|--:|--:|--:|--:|
+| **0.772** | **0.909** | **0.673** | **0.002155** |
+
+![Qualitative comparisons on HyperCOD pseudo-RGB images](figures/visualization4.jpg)
+
+### Polyp Segmentation
+
+We also evaluate the framework on **CVC-300**, **CVC-ClinicDB**, **CVC-ColonDB**, **ETIS-Larib**, and **Kvasir** to study its applicability to a different segmentation task. Training uses Kvasir and CVC-ClinicDB; the other three datasets provide cross-dataset evaluation. In the comparisons reported in the manuscript, CEVNet achieves the best or tied-best results on **17 of 20** evaluated metrics.
+
+![Qualitative comparisons on polyp segmentation](figures/visualization3.jpg)
+
+## Additional Visualizations
+
+### Evolution of Prediction Responses
+
+Intermediate responses progressively concentrate on object regions during training.
+
+![Intermediate response visualizations](figures/visualization2.jpg)
+
+### Hyperparameter Sensitivity
+
+The following visualization illustrates the joint effects of the auxiliary attention supervision weight and the low-rank calibration subspace rank.
+
+![Joint hyperparameter sensitivity](figures/hyperparameter_surface.jpg)
+
+## Repository Structure
+
+```text
+CEVNet/
+├── README.md
+└── figures/
+    ├── README.md
+    ├── motivation.jpg
+    ├── overall.jpg
+    ├── visualization.jpg
+    ├── pr_curves.jpg
+    ├── visualization2.jpg
+    ├── visualization3.jpg
+    ├── visualization4.jpg
+    └── hyperparameter_surface.jpg
+```
+
+## Code and Model Availability
+
+The repository currently provides the project description and figures. **Training code, inference scripts, pretrained checkpoints, and setup instructions are not yet available** and will be added in a later release.
+
+## Citation
+
+Citation information will be provided when the manuscript becomes publicly available.
